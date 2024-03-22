@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ShackleHotelBuddy</string>
+    <string name="checkin_date">Check-in Date</string>
+    <string name="checkout_date">Check-out Date</string>
+    <string name="date_format">DD/MM/YYYY</string>
+    <string name="search_results">Search results</string>
+    <string name="recentSearch">Recent searches</string>
+    <string name="select_guests_title">Select guests, \n date and time </string>
+    <string name="adult">Adults</string>
+    <string name="childern">Childern</string>
+    <string name="search">Search</string>
 </resources>
