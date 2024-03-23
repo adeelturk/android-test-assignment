@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -36,15 +38,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.shacklehotelbuddy.R
+import com.example.shacklehotelbuddy.core.networks.error.ErrorEntity
 import com.example.shacklehotelbuddy.data.model.Duration
+import com.example.shacklehotelbuddy.data.model.SearchQuery
 import com.example.shacklehotelbuddy.presentation.AppState
 import com.example.shacklehotelbuddy.presentation.HotelViewModel
 import com.example.shacklehotelbuddy.presentation.rememberAppState
+import com.example.shacklehotelbuddy.presentation.ui.HotelAppUiState
+import com.example.shacklehotelbuddy.presentation.ui.theme.White
 import com.example.shacklehotelbuddy.presentation.ui.theme.mediumUnit
 import com.example.shacklehotelbuddy.presentation.ui.theme.smallUnit
 import com.example.shacklehotelbuddy.presentation.ui.theme.xSmallUnit
+import com.example.shacklehotelbuddy.presentation.utils.UiErrorKeys
 import com.example.shacklehotelbuddy.ui.theme.LargeHeading
 import com.example.shacklehotelbuddy.ui.theme.MediumSpacer
 import com.example.shacklehotelbuddy.ui.theme.MediumTitle
@@ -54,10 +63,37 @@ import java.util.Calendar
 
 
 @Composable
-fun HotelSearchScreen(appState: AppState) {
-
-    val hotelViewModel = hiltViewModel<HotelViewModel>()
+fun HotelSearchScreen(hotelViewModel:HotelViewModel,
+                      appState: AppState,navigateToHotelsListScreen:()->Unit) {
     val hotelSearchQuery=hotelViewModel.hotelsSearchQuery.collectAsState()
+    val showDialog = hotelViewModel.progressLoading.collectAsState()
+    val uiAppState = hotelViewModel.uiAppState.collectAsState()
+    val cachedSearchQueryList=hotelViewModel.searchQueryList
+    ProgressDialog(showDialog = showDialog.value) {
+
+        hotelViewModel.showLoading(false)
+    }
+
+    when (val state = uiAppState.value) {
+        is HotelAppUiState.Error -> {
+            when (val error = state.error) {
+                is ErrorEntity.FrontEndError -> {
+                    if (error.uiErrorKeys == UiErrorKeys.SEARCH_INCOMPLETE_PARAMS) {
+                        appState.showSnackbar(stringResource(id = R.string.search_params_error))
+                    }
+                }
+
+                else -> {}
+            }
+        }
+        is HotelAppUiState.HotelSearchDataReceived->{
+
+            navigateToHotelsListScreen()
+            hotelViewModel.resetAppUiState()
+        }
+        else -> { }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -76,7 +112,7 @@ fun HotelSearchScreen(appState: AppState) {
                 color = Color.White
             )
             MediumSpacer()
-            Card() {
+            Card {
 
                 Column {
                     CheckInCheckOutDate(
@@ -133,17 +169,12 @@ fun HotelSearchScreen(appState: AppState) {
                 color = ShackleHotelBuddyTheme.colors.white
             )
 
-            RecentSearchList(arrayListOf("Testing","Testing","Testing","Testing","Testing","Testing","Testing","Testing","Testing","Testing","Testing",))
-
+            RecentSearchList(cachedSearchQueryList.value)
             MediumSpacer()
 
             SearchButton {
 
-                hotelViewModel.search().either({
-                    appState.showSnackbar("Error: Please select required data")
-                }){
-
-                }
+                hotelViewModel.search()
             }
 
         }
@@ -151,14 +182,33 @@ fun HotelSearchScreen(appState: AppState) {
 
 }
 
+@Composable
+fun ProgressDialog(showDialog:Boolean,onDismiss:()->Unit){
+
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = { onDismiss() },
+            DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            Box(
+                contentAlignment= Alignment.Center,
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(White, shape = RoundedCornerShape(8.dp))
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
 
 @Composable
-fun RecentSearchList(searchHistory: List<String>) {
+fun RecentSearchList(searchHistory: List<SearchQuery>) {
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)) {
             items(searchHistory) {
-                SearchResultItem(it)
+                SearchResultItem(it.toString())
             }
 
         }
@@ -361,7 +411,7 @@ fun SearchOptionTitle(rowScope: RowScope, icon: Int, title: Int) {
 @Preview
 fun PreviewHotelSearchScreen() {
     ShackleHotelBuddyTheme {
-        HotelSearchScreen(rememberAppState())
+        HotelSearchScreen(hiltViewModel(),rememberAppState()){}
     }
 
 }

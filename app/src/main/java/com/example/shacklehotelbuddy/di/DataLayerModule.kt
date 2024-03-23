@@ -1,6 +1,12 @@
 package com.example.shacklehotelbuddy.di
 
+import com.example.shacklehotelbuddy.data.local.HotelSearchLocalDataSource
+import com.example.shacklehotelbuddy.data.local.HotelSearchLocalDataSourceImpl
+import com.example.shacklehotelbuddy.data.local.database.HotelSearchQueryDao
+import com.example.shacklehotelbuddy.data.mapper.HotelDetailRequestMapper
 import com.example.shacklehotelbuddy.data.mapper.HotelRequestMapper
+import com.example.shacklehotelbuddy.data.mapper.HotelSearchResponseMapper
+import com.example.shacklehotelbuddy.data.mapper.SearchQueryDbMapper
 import com.example.shacklehotelbuddy.data.remote.HotelDataService
 import com.example.shacklehotelbuddy.data.remote.HotelRemoteDataSource
 import com.example.shacklehotelbuddy.data.remote.HotelRemoteDataSourceImpl
@@ -16,36 +22,19 @@ object DataLayerModule {
 
     @Provides
     fun provideHotelRemoteDataSource( hotelDataService: HotelDataService,
-                                      hotelRequestMapper: HotelRequestMapper) :HotelRemoteDataSource{
-       return HotelRemoteDataSourceImpl(hotelDataService,hotelRequestMapper)
+                                      hotelRequestMapper: HotelRequestMapper,
+                                      hotelDetailRequestMapper: HotelDetailRequestMapper,
+                                      hotelSearchResponseMapper: HotelSearchResponseMapper
+    ) :HotelRemoteDataSource{
+       return HotelRemoteDataSourceImpl(hotelDataService,hotelRequestMapper,hotelDetailRequestMapper,hotelSearchResponseMapper)
     }
 
+    @Provides
+    fun providesHotelSearchLocalDataSource( searchQueryDao: HotelSearchQueryDao,
+                                            searchQueryDbMapper: SearchQueryDbMapper
+    ):HotelSearchLocalDataSource{
 
+        return HotelSearchLocalDataSourceImpl(searchQueryDao,searchQueryDbMapper)
+    }
 
 }
-
-
-/*
-
-@Module
-@InstallIn(ViewModelComponent::class)
-object DataModule {
-
-    @Provides
-    fun provideHotelRemoteDataSource(hotelSearchService: HotelSearchService): HotelRemoteDataSource =
-        HotelRemoteDataSourceImpl(hotelSearchService)
-
-    @Provides
-    fun provideHotelLocalDataSourceImpl(hotelSearchDao: HotelSearchDao): HotelLocalDataSource =
-        HotelLocalDataSourceImpl(hotelSearchDao)
-
-    @Provides
-    fun provideHotelRepository(
-        remoteDataSource: HotelRemoteDataSource,
-        localDataSource: HotelLocalDataSource
-    ): HotelRepository = HotelRepositoryImpl(remoteDataSource, localDataSource)
-
-}
-
-
-*/

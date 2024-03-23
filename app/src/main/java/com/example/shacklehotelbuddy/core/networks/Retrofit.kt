@@ -1,5 +1,6 @@
 package com.example.shacklehotelbuddy.core.networks
 
+import android.util.Log
 import com.example.shacklehotelbuddy.core.functional.Either
 import com.example.shacklehotelbuddy.core.networks.error.ErrorEntity
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +49,7 @@ fun <T> Call<T>.requestBlocking(): Either<ErrorEntity, T> {
 
 
 @Suppress("unused")
- fun <T, R> Call<T>.requestBlockingFlow(transform: (T) -> R): Flow<Either<ErrorEntity, R>> {
+ fun <T, R : Any> Call<T>.requestBlockingFlow(transform: (T) -> R): Flow<Either<ErrorEntity, R>> {
 
     return flow {
 

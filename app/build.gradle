@@ -21,7 +21,7 @@ android {
             useSupportLibrary true
         }
         buildConfigField "String", "BASE_URL", '"https://hotels4.p.rapidapi.com"'
-        buildConfigField "String", "X_RAPID_API_KEY", '"51293b0871msh0820c4fcf7af560p19e16ajsnf7527dcc53b8"'
+        buildConfigField "String", "X_RAPID_API_KEY", '"e68e47ebb3msh6b27b2ff4bcbb85p1a6859jsne3fc1b2e1a49"'
         buildConfigField "String", "X_RAPID_API_HOST", '"hotels4.p.rapidapi.com"'
     }
 
@@ -77,8 +77,15 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    // logs
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
+    //Asycnh Image
+    implementation("io.coil-kt:coil-compose:2.0.0")
+
+    // Room
+    implementation 'androidx.room:room-ktx:2.5.2'
+    kapt 'androidx.room:room-compiler:2.5.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

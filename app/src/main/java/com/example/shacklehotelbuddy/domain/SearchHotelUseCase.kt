@@ -5,10 +5,9 @@ import com.example.shacklehotelbuddy.data.remote.HotelRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class SearchHotelUseCase @Inject constructor(private val hotelRepository:HotelRepository) {
 
-    suspend operator fun invoke(data:SearchQuery){
+    suspend operator fun invoke(data:SearchQuery)=
         hotelRepository.searchHotels(data)
-    }
+
 }

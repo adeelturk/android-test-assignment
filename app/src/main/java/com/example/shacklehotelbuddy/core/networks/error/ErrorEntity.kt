@@ -1,9 +1,10 @@
 package com.example.shacklehotelbuddy.core.networks.error
 
+import com.example.shacklehotelbuddy.presentation.utils.UiErrorKeys
+
 
 /**
  * Base Class for handling errors/failures/exceptions.
- * Every feature specific failure should extend [FeatureErrorEntity] class.
  */
 sealed class ErrorEntity {
 
@@ -27,7 +28,9 @@ sealed class ErrorEntity {
 
 
     data class ApiRateLimitExceeded(val message:String) : ErrorEntity()
+    data class FrontEndError(val uiErrorKeys:UiErrorKeys) : ErrorEntity()
 
-    /** * Extend this class for feature specific failures.*/
-    abstract class FeatureErrorEntity : ErrorEntity()
+
+
+
 }

@@ -9,4 +9,5 @@
     <string name="adult">Adults</string>
     <string name="childern">Childern</string>
     <string name="search">Search</string>
+    <string name="search_params_error">Select required search params</string>
 </resources>

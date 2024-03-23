@@ -1,10 +1,11 @@
-package com.example.shacklehotelbuddy.data.model
+package com.example.shacklehotelbuddy.data.model.hotel
 
 import androidx.annotation.Keep
+import com.example.shacklehotelbuddy.data.model.Duration
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class HotelSearchEntity(
+data class HotelSearchRequestEntity(
     @SerializedName("currency")
     val currency: String = "USD",
     @SerializedName("locale")

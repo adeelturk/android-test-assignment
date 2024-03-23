@@ -4,6 +4,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 class AppState(
   val snackbarHostState: SnackbarHostState,
   val navController: NavHostController,
-  val coroutineScope: CoroutineScope
+  val coroutineScope: CoroutineScope,
 ) {
   val currentDestination: NavDestination?
     @Composable get() = navController

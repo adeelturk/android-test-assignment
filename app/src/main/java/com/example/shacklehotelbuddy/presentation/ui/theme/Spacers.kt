@@ -35,11 +35,6 @@ fun XSmallSpacer() {
 }
 
 @Composable
-fun xSmallSpacer() {
-  Spacer(modifier = Modifier.size(xSmallUnit))
-}
-
-@Composable
 fun ColumnScope.FillSpacer(
 ) {
   Spacer(modifier = Modifier.weight(1f))

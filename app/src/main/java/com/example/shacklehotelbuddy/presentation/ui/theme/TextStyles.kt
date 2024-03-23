@@ -221,6 +221,29 @@ fun SmallTitle(
 }
 
 @Composable
+fun SmallTitleBold(
+  modifier: Modifier = Modifier,
+  textAlign: TextAlign? = null,
+  text: String,
+  maxLines: Int = Int.MAX_VALUE,
+  color: Color = Color.Unspecified,
+  isTextWithShadow:Boolean=false
+) {
+  ShackleText(
+    modifier = modifier,
+    fontSize = FontSize.Small,
+    maxLines = maxLines,
+    fontFamily = FontFamily.Title,
+    textAlign = textAlign,
+    text = text,
+    color = color,
+    isTextWithShadow=isTextWithShadow,
+    fontWeight = FontWeight.Bold
+  )
+}
+
+
+@Composable
 fun LargeBody(text: String, color: Color = Color.Unspecified,isTextWithShadow:Boolean=false) {
   ShackleText(
     fontSize = FontSize.Large,
