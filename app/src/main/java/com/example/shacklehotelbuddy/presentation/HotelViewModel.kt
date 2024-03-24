@@ -45,8 +45,10 @@ class HotelViewModel @Inject constructor(
     private val _searchQueryList = MutableStateFlow<List<SearchQuery>>(emptyList())
     val searchQueryList = _searchQueryList.asStateFlow()
 
+    private var shouldBeCached:Boolean=true
     private fun updateSearchQuery(updateBlock: SearchQuery.() -> SearchQuery) {
         _searchQuery.update {
+            shouldBeCached=true
             it.updateBlock()
         }
     }
@@ -54,6 +56,10 @@ class HotelViewModel @Inject constructor(
         fetchSearchQuery()
     }
 
+    fun updateSearchQuery(searchQuery: SearchQuery){
+        _searchQuery.value=searchQuery
+        shouldBeCached=false
+    }
     fun updateCheckInDate(duration: Duration) {
         updateSearchQuery { copy(checkInDate = duration) }
     }
@@ -78,7 +84,7 @@ class HotelViewModel @Inject constructor(
         if (_searchQuery.value.isValid()) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    saveSearchQuery(_searchQuery.value)
+                   if(shouldBeCached) saveSearchQuery(_searchQuery.value)
                     showLoading(true)
                     searchHotelUseCase(_searchQuery.value).collect {
 

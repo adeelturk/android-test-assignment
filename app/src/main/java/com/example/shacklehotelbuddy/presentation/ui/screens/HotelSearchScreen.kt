@@ -151,7 +151,10 @@ fun HotelSearchScreen(hotelViewModel:HotelViewModel,
                 color = ShackleHotelBuddyTheme.colors.white
             )
 
-            RecentSearchList(cachedSearchQueryList.value)
+            RecentSearchList(cachedSearchQueryList.value){
+                hotelViewModel.updateSearchQuery(it)
+                hotelViewModel.search()
+            }
             MediumSpacer()
 
             SearchButton {
@@ -212,12 +215,12 @@ fun ProgressDialog(showDialog:Boolean,onDismiss:()->Unit){
 }
 
 @Composable
-fun RecentSearchList(searchHistory: List<SearchQuery>) {
+fun RecentSearchList(searchHistory: List<SearchQuery>,recentSearchItemsCLicked:(SearchQuery)->Unit) {
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)) {
             items(searchHistory) {
-                SearchResultItem(it.toString())
+                SearchResultItem(it,recentSearchItemsCLicked)
             }
 
         }
@@ -225,8 +228,10 @@ fun RecentSearchList(searchHistory: List<SearchQuery>) {
 }
 
 @Composable
-fun SearchResultItem(searchHistory: String) {
-    Box(modifier = Modifier.padding(vertical = xSmallUnit)) {
+fun SearchResultItem(searchHistory: SearchQuery,recentSearchItemsCLicked:(SearchQuery)->Unit) {
+    Box(modifier = Modifier.padding(vertical = xSmallUnit).clickable {
+        recentSearchItemsCLicked(searchHistory)
+    }) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(horizontal = smallUnit)
@@ -247,7 +252,7 @@ fun SearchResultItem(searchHistory: String) {
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(horizontal = smallUnit),
-                text = searchHistory,
+                text = searchHistory.toString(),
                 color = ShackleHotelBuddyTheme.colors.grayText,
 
                 )
