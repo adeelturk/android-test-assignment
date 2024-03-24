@@ -3,11 +3,12 @@ package com.example.shacklehotelbuddy.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shacklehotelbuddy.core.networks.error.ErrorEntity
-import com.example.shacklehotelbuddy.data.local.HotelSearchLocalRepo
 import com.example.shacklehotelbuddy.data.model.Duration
 import com.example.shacklehotelbuddy.data.model.SearchQuery
 import com.example.shacklehotelbuddy.data.model.hotel.Hotel
+import com.example.shacklehotelbuddy.domain.FetchRecentSearchQueriesUseCase
 import com.example.shacklehotelbuddy.domain.HotelDetailUseCase
+import com.example.shacklehotelbuddy.domain.SaveSearchQueryUseCase
 import com.example.shacklehotelbuddy.domain.SearchHotelUseCase
 import com.example.shacklehotelbuddy.presentation.ui.HotelAppUiState
 import com.example.shacklehotelbuddy.presentation.utils.UiErrorKeys
@@ -24,10 +25,10 @@ import javax.inject.Inject
 class HotelViewModel @Inject constructor(
     private val searchHotelUseCase: SearchHotelUseCase,
     private val hotelDetailUseCase: HotelDetailUseCase,
-    private val hotelSearchLocalRepo: HotelSearchLocalRepo
+    private val saveSearchQuery: SaveSearchQueryUseCase,
+    private val fetchRecentQueries: FetchRecentSearchQueriesUseCase
 ) :
     ViewModel() {
-
 
     private val _searchQuery = MutableStateFlow(SearchQuery(Duration(), Duration(), 0, 0))
     val hotelsSearchQuery = _searchQuery.asStateFlow()
@@ -77,7 +78,7 @@ class HotelViewModel @Inject constructor(
         if (_searchQuery.value.isValid()) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    hotelSearchLocalRepo.saveSearchQuery(_searchQuery.value)
+                    saveSearchQuery(_searchQuery.value)
                     showLoading(true)
                     searchHotelUseCase(_searchQuery.value).collect {
 
@@ -104,7 +105,7 @@ class HotelViewModel @Inject constructor(
     private fun fetchSearchQuery() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                hotelSearchLocalRepo.getHotelSearchQuery().collect {
+                fetchRecentQueries().collect {
 
                     _searchQueryList.value = it
                 }

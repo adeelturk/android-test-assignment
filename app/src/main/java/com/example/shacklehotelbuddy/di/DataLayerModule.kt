@@ -1,5 +1,7 @@
 package com.example.shacklehotelbuddy.di
 
+import com.example.shacklehotelbuddy.data.HotelRepository
+import com.example.shacklehotelbuddy.data.HotelRepositoryImpl
 import com.example.shacklehotelbuddy.data.local.HotelSearchLocalDataSource
 import com.example.shacklehotelbuddy.data.local.HotelSearchLocalDataSourceImpl
 import com.example.shacklehotelbuddy.data.local.database.HotelSearchQueryDao
@@ -35,6 +37,13 @@ object DataLayerModule {
     ):HotelSearchLocalDataSource{
 
         return HotelSearchLocalDataSourceImpl(searchQueryDao,searchQueryDbMapper)
+    }
+
+    @Provides
+    fun providesHotelRepository(hotelRemoteDataSource: HotelRemoteDataSource,
+                                hotelLocalDataSource: HotelSearchLocalDataSource):HotelRepository{
+
+        return HotelRepositoryImpl(hotelRemoteDataSource,hotelLocalDataSource)
     }
 
 }

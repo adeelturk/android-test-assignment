@@ -68,31 +68,13 @@ fun HotelSearchScreen(hotelViewModel:HotelViewModel,
     val hotelSearchQuery=hotelViewModel.hotelsSearchQuery.collectAsState()
     val showDialog = hotelViewModel.progressLoading.collectAsState()
     val uiAppState = hotelViewModel.uiAppState.collectAsState()
-    val cachedSearchQueryList=hotelViewModel.searchQueryList
+    val cachedSearchQueryList=hotelViewModel.searchQueryList.collectAsState()
     ProgressDialog(showDialog = showDialog.value) {
 
         hotelViewModel.showLoading(false)
     }
 
-    when (val state = uiAppState.value) {
-        is HotelAppUiState.Error -> {
-            when (val error = state.error) {
-                is ErrorEntity.FrontEndError -> {
-                    if (error.uiErrorKeys == UiErrorKeys.SEARCH_INCOMPLETE_PARAMS) {
-                        appState.showSnackbar(stringResource(id = R.string.search_params_error))
-                    }
-                }
-
-                else -> {}
-            }
-        }
-        is HotelAppUiState.HotelSearchDataReceived->{
-
-            navigateToHotelsListScreen()
-            hotelViewModel.resetAppUiState()
-        }
-        else -> { }
-    }
+    HandleError(uiAppState.value,appState,hotelViewModel,navigateToHotelsListScreen)
 
     Box(
         modifier = Modifier
@@ -180,6 +162,33 @@ fun HotelSearchScreen(hotelViewModel:HotelViewModel,
         }
     }
 
+}
+
+@Composable
+fun HandleError(uiAppState: HotelAppUiState,appState: AppState,hotelViewModel: HotelViewModel,navigateToHotelsListScreen:()->Unit) {
+    when (val state = uiAppState) {
+        is HotelAppUiState.Error -> {
+            when (val error = state.error) {
+                is ErrorEntity.FrontEndError -> {
+                    if (error.uiErrorKeys == UiErrorKeys.SEARCH_INCOMPLETE_PARAMS) {
+                        appState.showSnackbar(stringResource(id = R.string.search_params_error))
+                    }
+                }
+
+                else -> {
+
+                    appState.showSnackbar(stringResource(id = R.string.something_went_wrong))
+
+                }
+            }
+        }
+        is HotelAppUiState.HotelSearchDataReceived->{
+
+            navigateToHotelsListScreen()
+            hotelViewModel.resetAppUiState()
+        }
+        else -> { }
+    }
 }
 
 @Composable

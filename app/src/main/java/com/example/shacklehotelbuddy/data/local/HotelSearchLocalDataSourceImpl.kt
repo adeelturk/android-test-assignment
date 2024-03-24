@@ -24,7 +24,7 @@ class HotelSearchLocalDataSourceImpl @Inject constructor(
 
 
         return searchQueryDao.getHotelSearchQueries().map {list->
-               list.map {
+               list.reversed().map {
                     searchQueryDbMapper.mapFromDbToDomainDto(it)
                 }
         }
