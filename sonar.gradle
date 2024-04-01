@@ -1,0 +1,33 @@
+apply plugin: "org.sonarqube"
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "ShackleHotelBuddy"
+        property "sonar.organization", "adeel"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.login","admin"
+        property "sonar.password","Test1234"
+        property "sonar.tests", ["src/test/java",
+                                 "src/androidTest/java"]
+        property "sonar.test.inclusions", ["**/*Test.*","**/*test.*"]
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.sources", ["src/main/java"]
+        // Exclude test subdirectories from source scope
+        property "sonar.exclusions", '**/*Test*/**/*,' +
+                '**/*test*/**/*,' +
+                'build/**' +
+                '*.json,' +
+                '**/.gradle/**,' +
+                '**/R.class'
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.junit.reportPaths", "**/test-results/**/*.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "**/reports/jacoco/**/*.xml"
+        property "sonar.coverage.exclusions", "${fileFilter.join(', ')}"
+
+       /* // Add the deprecated Java version property
+        property "sonar.scanner.force-deprecated-java-version", "true"*/
+    }
+}
+
+
+//tasks.sonarqube.dependsOn ":ShackleHotelBuddy:testDebugUnitTestCoverage"

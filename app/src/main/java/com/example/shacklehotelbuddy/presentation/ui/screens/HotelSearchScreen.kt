@@ -168,7 +168,10 @@ fun HotelSearchScreen(hotelViewModel:HotelViewModel,
 }
 
 @Composable
-fun HandleError(uiAppState: HotelAppUiState,appState: AppState,hotelViewModel: HotelViewModel,navigateToHotelsListScreen:()->Unit) {
+fun HandleError(uiAppState: HotelAppUiState,
+                appState: AppState,
+                hotelViewModel: HotelViewModel,
+                navigateToHotelsListScreen:()->Unit) {
     when (val state = uiAppState) {
         is HotelAppUiState.Error -> {
             when (val error = state.error) {

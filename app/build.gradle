@@ -4,6 +4,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'kotlin-kapt'
 }
+apply from: "$project.rootDir/sonar.gradle"
 
 android {
     namespace 'com.example.shacklehotelbuddy'
