@@ -27,6 +27,3 @@ sonarqube {
         property "sonar.scanner.force-deprecated-java-version", "true"*/
     }
 }
-
-
-//tasks.sonarqube.dependsOn ":ShackleHotelBuddy:testDebugUnitTestCoverage"
